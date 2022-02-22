@@ -1,4 +1,4 @@
-<p align="center"><img width="200" src="https://i.ibb.co/4ZPbV9p/server-storage.png" alt="Laravel Eloquent session handler" /></p>
+<p align="center"><img src="https://banners.beyondco.de/Eloquent%20Session%20handler.png?theme=light&packageManager=composer+require&packageName=rogervila%2Flaravel-eloquent-session-handler&pattern=architect&style=style_1&description=Handle+sessions+with+eloquent&md=1&showWatermark=0&fontSize=100px&images=https%3A%2F%2Flaravel.com%2Fimg%2Flogomark.min.svg" alt="Eloquent Session Handler" /></p>
 
 [![Build Status](https://github.com/rogervila/laravel-eloquent-session-handler/workflows/build/badge.svg)](https://github.com/rogervila/array-diff-multidimensional/actions)
 [![StyleCI](https://github.styleci.io/repos/211657121/shield?branch=master)](https://github.styleci.io/repos/211657121)
@@ -9,7 +9,7 @@
 [![Total Downloads](https://poser.pugx.org/rogervila/laravel-eloquent-session-handler/downloads)](https://packagist.org/packages/rogervila/laravel-eloquent-session-handler)
 [![License](https://poser.pugx.org/rogervila/laravel-eloquent-session-handler/license)](https://packagist.org/packages/rogervila/laravel-eloquent-session-handler)
 
-# Laravel Eloquent session handler
+# Eloquent Session Handler
 
 ## Author
 
@@ -18,5 +18,3 @@ Created by [Roger Vilà](https://rogervila.es)
 ## License
 
 This package is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-
-<a href="https://www.flaticon.com/free-icons/storage" title="storage icons">Storage icons created by Pixel perfect - Flaticon</a>
