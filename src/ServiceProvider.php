@@ -1,9 +1,9 @@
 <?php
 
-namespace LaravelEloquentSessionHandler;
+namespace EloquentSessionHandler;
 
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Session as LaravelSession;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
 
 class ServiceProvider extends LaravelServiceProvider
@@ -15,9 +15,9 @@ class ServiceProvider extends LaravelServiceProvider
      */
     public function boot()
     {
-        LaravelSession::extend('eloquent', function () {
-            return new EloquentSessionHandler(
-                Session::class,
+        Session::extend('eloquent', function () {
+            return new Handler(
+                Config::get('session.model', \EloquentSessionHandler\Session::class),
                 Config::get('session.lifetime', 120)
             );
         });

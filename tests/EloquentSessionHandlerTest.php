@@ -1,16 +1,16 @@
 <?php
 
-namespace Tests\LaravelEloquentSessionHandler;
+namespace Tests\EloquentSessionHandler;
 
 use Carbon\Carbon;
-use LaravelEloquentSessionHandler\ServiceProvider;
-use LaravelEloquentSessionHandler\Session as SessionModel;
+use EloquentSessionHandler\ServiceProvider;
+use EloquentSessionHandler\Session as SessionModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session as LaravelSession;
-use Tests\LaravelEloquentSessionHandler\Fixtures\User;
+use Tests\EloquentSessionHandler\Fixtures\User;
 use Orchestra\Testbench\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 

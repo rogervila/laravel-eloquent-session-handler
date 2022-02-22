@@ -1,6 +1,6 @@
 <?php
 
-namespace LaravelEloquentSessionHandler;
+namespace EloquentSessionHandler;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Config;

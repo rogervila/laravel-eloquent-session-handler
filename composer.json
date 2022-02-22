@@ -27,12 +27,12 @@
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
-            "LaravelEloquentSessionHandler\\": "src/"
+            "EloquentSessionHandler\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\LaravelEloquentSessionHandler\\": "tests/"
+            "Tests\\EloquentSessionHandler\\": "tests/"
         }
     },
     "config": {
@@ -43,7 +43,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "LaravelEloquentSessionHandler\\ServiceProvider"
+                "EloquentSessionHandler\\ServiceProvider"
             ]
         }
     },

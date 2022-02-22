@@ -1,12 +1,12 @@
 <?php
 
-namespace LaravelEloquentSessionHandler;
+namespace EloquentSessionHandler;
 
 use Illuminate\Session\DatabaseSessionHandler;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Arr;
 
-class EloquentSessionHandler extends DatabaseSessionHandler
+class Handler extends DatabaseSessionHandler
 {
     /** @var string */
     protected $model;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\LaravelEloquentSessionHandler\Fixtures;
+namespace Tests\EloquentSessionHandler\Fixtures;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
