@@ -4,7 +4,6 @@ namespace EloquentSessionHandler;
 
 use Illuminate\Session\DatabaseSessionHandler;
 use Illuminate\Contracts\Container\Container;
-use Illuminate\Support\Arr;
 
 class Handler extends DatabaseSessionHandler
 {
@@ -22,7 +21,8 @@ class Handler extends DatabaseSessionHandler
     public function __construct(string $model, int $minutes, Container $container = null)
     {
         $this->model = $model;
-        $instance = new $model;
+
+        $instance = $this->makeInstance();
 
         parent::__construct($instance->getConnection(), $instance->getTable(), $minutes, $container);
     }
@@ -30,10 +30,23 @@ class Handler extends DatabaseSessionHandler
     /**
      * Get a fresh query builder instance for the table.
      *
-     * @return \Illuminate\Database\Query\Builder
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     protected function getQuery()
     {
-        return (new $this->model)->newQuery();
+        return $this->makeInstance()->newQuery();
+    }
+
+    /**
+     * Get a fresh query builder instance for the table.
+     *
+     * @return \EloquentSessionHandler\Session
+     */
+    protected function makeInstance()
+    {
+        /** @var \EloquentSessionHandler\Session */
+        $instance = (new $this->model);
+
+        return $instance;
     }
 }

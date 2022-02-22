@@ -18,11 +18,12 @@ final class EloquentSessionHandlerTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected function deleteMigrations(?Filesystem $filesystem = null)
+    protected function deleteMigrations(?Filesystem $filesystem = null):void
     {
         $filesystem = is_null($filesystem) ? new Filesystem() : $filesystem;
 
         if ($filesystem->exists($vendorDir = __DIR__ . '/../vendor')) {
+            /** @phpstan-ignore-next-line */
             $filesystem->remove(glob($vendorDir . '/orchestra/testbench-core/laravel/database/migrations/*.php'));
         }
     }
@@ -37,6 +38,7 @@ final class EloquentSessionHandlerTest extends TestCase
         $this->artisan('session:table');
 
         if (!Schema::hasTable('sessions')) {
+            /** @phpstan-ignore-next-line */
             $this->artisan('migrate')->run();
         }
     }
@@ -90,7 +92,7 @@ final class EloquentSessionHandlerTest extends TestCase
         ]);
 
         // https://github.com/laravel/framework/blob/8.x/src/Illuminate/Auth/SessionGuard.php#L474
-        Auth::guard('web')->login($user);
+        Auth::login($user);
         $this->assertEquals(Auth::id(), $user->id);
 
         // Persist session
@@ -98,7 +100,7 @@ final class EloquentSessionHandlerTest extends TestCase
 
         $this->assertEquals(1, SessionModel::count());
 
-        $session = SessionModel::first();
+        $session = SessionModel::firstOrFail();
         $this->assertInstanceOf(Carbon::class, $session->last_activity);
         $this->assertIsArray($session->unserialized_payload);
     }

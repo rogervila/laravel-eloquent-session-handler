@@ -8,6 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @link https://github.com/repat/laravel-database-session-model
+ *
+ * @property string $id
+ * @property string $user_id
+ * @property string $ip_address
+ * @property string $user_agent
+ * @property string $payload
+ * @property \Carbon\Carbon $last_activity
+ * @property array $unserialized_payload
  */
 class Session extends Model
 {
@@ -33,9 +41,7 @@ class Session extends Model
     public $timestamps = false;
 
     /**
-     * Unguard Session model
-     *
-     * @var array
+     * {@inheritdoc}
      */
     protected $guarded = [];
 
@@ -56,17 +62,20 @@ class Session extends Model
     public function __construct()
     {
         parent::__construct();
-        $this->table = Config::get('sessions.table', 'sessions');
+
+        /** @var string */
+        $table = Config::get('sessions.table', 'sessions');
+
+        $this->table = $table;
     }
 
-    /**
-     * Get Unserialized Payload
-     *
-     * @return array
-     */
+
     public function getUnserializedPayloadAttribute(): array
     {
-        return unserialize(base64_decode($this->payload));
+        /** @var array */
+        $payload = unserialize(base64_decode($this->payload));
+
+        return $payload;
     }
 
     /**

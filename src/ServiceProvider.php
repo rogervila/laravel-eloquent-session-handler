@@ -16,10 +16,13 @@ class ServiceProvider extends LaravelServiceProvider
     public function boot()
     {
         Session::extend('eloquent', function () {
-            return new Handler(
-                Config::get('session.model', \EloquentSessionHandler\Session::class),
-                Config::get('session.lifetime', 120)
-            );
+            /** @var string */
+            $model = Config::get('session.model', \EloquentSessionHandler\Session::class);
+
+            /** @var int */
+            $minutes = Config::get('session.lifetime', 120);
+
+            return new Handler($model, $minutes);
         });
     }
 }
