@@ -1,11 +1,12 @@
 {
-    "name": "rogervila/composer-package-template",
-    "type": "library",
-    "description": "PHP Composer package template",
-    "keywords": [
-        "composer package template"
-    ],
+    "name": "rogervila/laravel-eloquent-session-handler",
+    "description": "Eloquent session handler for Laravel",
     "license": "MIT",
+    "type": "library",
+    "keywords": [
+        "laravel eloquent session",
+        "laravel session model"
+    ],
     "authors": [
         {
             "name": "Roger Vilà",
@@ -13,27 +14,45 @@
         }
     ],
     "require": {
-        "php": "^7.2 || ^8.0"
+        "php": "^7.3 || ^8.0",
+        "laravel/framework": "^8.0 || ^9.0"
     },
     "require-dev": {
-        "phpstan/phpstan": "^1.0",
-        "phpunit/phpunit": "^8.0 || ^9.0"
+        "nunomaduro/larastan": "^1.0",
+        "orchestra/testbench": "^6.0 || ^7.0",
+        "phpunit/phpunit": "^8.0 || ^9.0",
+        "symfony/filesystem": "^5.0 || ^6.0"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "EloquentSessionHandler\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\EloquentSessionHandler\\": "tests/"
+        }
     },
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true
     },
-    "autoload": {
-        "psr-4": {
-            "Example\\": "src/"
+    "extra": {
+        "laravel": {
+            "providers": [
+                "EloquentSessionHandler\\ServiceProvider"
+            ]
         }
     },
-    "autoload-dev": {
-        "psr-4": {
-            "Tests\\Example\\": "tests/"
-        }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    "scripts": {
+        "post-autoload-dump": [
+            "@php ./vendor/bin/testbench package:discover --ansi"
+        ],
+        "test": [
+            "@php ./vendor/bin/phpunit"
+        ]
+    }
 }
