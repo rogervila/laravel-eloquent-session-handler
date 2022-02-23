@@ -20,7 +20,7 @@ class ServiceProvider extends LaravelServiceProvider
                 throw new \RuntimeException('[session.models.session] should be a string');
             }
 
-            if (!is_int( $minutes = Config::get('session.lifetime', 120))) {
+            if (!is_int($minutes = Config::get('session.lifetime', 120))) {
                 throw new \RuntimeException('[session.lifetime] should be a integer');
             }
 
