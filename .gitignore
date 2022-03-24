@@ -5,3 +5,4 @@ junit-logfile.xml
 clover.xml
 composer.lock
 .phpunit.result.cache
+*.sqlite

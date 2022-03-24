@@ -8,7 +8,6 @@ use EloquentSessionHandler\Session as SessionModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session as LaravelSession;
 use Tests\EloquentSessionHandler\Fixtures\User;
 use Orchestra\Testbench\TestCase;
@@ -18,13 +17,14 @@ final class EloquentSessionHandlerTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected function deleteMigrations(?Filesystem $filesystem = null):void
-    {
-        $filesystem = is_null($filesystem) ? new Filesystem() : $filesystem;
+    /** @var \Symfony\Component\Filesystem\Filesystem */
+    protected $filesystem;
 
-        if ($filesystem->exists($vendorDir = __DIR__ . '/../vendor')) {
+    protected function deleteMigrations(): void
+    {
+        if ($this->filesystem->exists($vendorDir = __DIR__ . '/../vendor')) {
             /** @phpstan-ignore-next-line */
-            $filesystem->remove(glob($vendorDir . '/orchestra/testbench-core/laravel/database/migrations/*.php'));
+            $this->filesystem->remove(glob($vendorDir . '/orchestra/testbench-core/laravel/database/migrations/*.php'));
         }
     }
 
@@ -33,8 +33,12 @@ final class EloquentSessionHandlerTest extends TestCase
      */
     protected function setUp(): void
     {
+        $this->filesystem = new Filesystem();
+
         parent::setUp();
+
         $this->deleteMigrations();
+
         $this->artisan('session:table');
 
         if (!Schema::hasTable('sessions')) {
@@ -77,6 +81,15 @@ final class EloquentSessionHandlerTest extends TestCase
     protected function defineEnvironment($app)
     {
         $app['config']->set('session.driver', 'eloquent');
+        $app['config']->set('session.models.user', User::class);
+        $app['config']->set('database.default', 'testing');
+        $app['config']->set('database.connections.testing', [
+            'driver'   => 'sqlite',
+            'database' => ':memory:',
+            'url' => null,
+            'prefix'   => '',
+            'foreign_key_constraints' => true,
+        ]);
     }
 
 
@@ -85,11 +98,7 @@ final class EloquentSessionHandlerTest extends TestCase
         $this->assertEquals('eloquent', LaravelSession::getDefaultDriver());
         $this->assertEquals(0, SessionModel::count());
 
-        $user = User::create([
-            'name' => 'foo',
-            'email' => 'foo@bar.com',
-            'password' => Hash::make('secret'),
-        ]);
+        $user = User::fake();
 
         // https://github.com/laravel/framework/blob/8.x/src/Illuminate/Auth/SessionGuard.php#L474
         Auth::login($user);
@@ -103,5 +112,30 @@ final class EloquentSessionHandlerTest extends TestCase
         $session = SessionModel::firstOrFail();
         $this->assertInstanceOf(Carbon::class, $session->last_activity);
         $this->assertIsArray($session->unserialized_payload);
+    }
+
+    public function test_session_user_relationship(): void
+    {
+        $id = uniqid();
+
+        $user = User::fake(['email' => 'foo@foo.com']);
+
+        SessionModel::insert([
+            'id' => $id,
+            'user_id' => $user->id,
+            'ip_address' => '0.0.0.0',
+            'user_agent' => 'Bot',
+            'payload' => 'whatever',
+            'last_activity' => Carbon::now(),
+        ]);
+
+        $session = SessionModel::find($id);
+
+        $this->assertNotNull($session);
+
+        /** @phpstan-ignore-next-line */
+        $this->assertInstanceOf(User::class, $session->user);
+        /** @phpstan-ignore-next-line */
+        $this->assertEquals($user->id, $session->user->id);
     }
 }

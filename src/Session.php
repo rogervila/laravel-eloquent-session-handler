@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * @link https://github.com/repat/laravel-database-session-model
  *
  * @property string $id
- * @property string $user_id
+ * @property int $user_id
  * @property string $ip_address
  * @property string $user_agent
  * @property string $payload
@@ -20,44 +20,52 @@ use Illuminate\Database\Eloquent\Model;
 class Session extends Model
 {
     /**
-     * The data type of the auto-incrementing ID.
-     *
-     * @var string
+     * {@inheritDoc}
      */
     protected $keyType = 'string';
 
     /**
-     * Indicates if the model should auto increment.
-     *
-     * @var bool
+     * {@inheritDoc}
      */
     public $incrementing = false;
 
     /**
-     * Indicates if the model has no timestamps
-     *
-     * @var bool
+     * {@inheritDoc}
      */
     public $timestamps = false;
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     protected $guarded = [];
 
     /**
-     * Attribute casting
-     *
-     * @var array
+     * {@inheritDoc}
      */
     protected $casts = [
+        'user_id' => 'int',
         'last_activity' => 'datetime',
+    ];
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $appends = [
+        // 'id',
+        // 'user_id',
+        // 'ip_address',
+        // 'user_agent',
+        // 'payload',
+        // 'last_activity',
+        'unserialized_payload',
     ];
 
     /**
      * Use parent constructor and
      * set the sessiontable according
      * to the laravel configuration
+     *
+     * {@inheritDoc}
      */
     public function __construct()
     {
@@ -72,8 +80,9 @@ class Session extends Model
 
     public function getUnserializedPayloadAttribute(): array
     {
-        /** @var array */
-        $payload = unserialize(base64_decode($this->payload));
+        if (!is_array($payload = unserialize(base64_decode($this->payload)))) {
+            return [];
+        }
 
         return $payload;
     }
@@ -96,6 +105,10 @@ class Session extends Model
      */
     public function user(): BelongsTo
     {
-        return $this->belongsTo('\App\Models\User');
+        if (!is_string($user = Config::get('session.models.user', '\App\Models\User'))) {
+            throw new \RuntimeException('[session.models.user] should be a string');
+        }
+
+        return $this->belongsTo($user);
     }
 }

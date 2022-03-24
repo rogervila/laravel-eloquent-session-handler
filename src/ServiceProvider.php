@@ -16,11 +16,13 @@ class ServiceProvider extends LaravelServiceProvider
     public function boot()
     {
         Session::extend('eloquent', function () {
-            /** @var string */
-            $model = Config::get('session.model', \EloquentSessionHandler\Session::class);
+            if (!is_string($model = Config::get('session.models.session', \EloquentSessionHandler\Session::class))) {
+                throw new \RuntimeException('[session.models.session] should be a string');
+            }
 
-            /** @var int */
-            $minutes = Config::get('session.lifetime', 120);
+            if (!is_int($minutes = Config::get('session.lifetime', 120))) {
+                throw new \RuntimeException('[session.lifetime] should be a integer');
+            }
 
             return new Handler($model, $minutes);
         });

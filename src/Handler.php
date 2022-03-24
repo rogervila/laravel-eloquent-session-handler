@@ -28,6 +28,35 @@ class Handler extends DatabaseSessionHandler
     }
 
     /**
+     * {@inheritdoc}
+     *
+     * @return bool
+     */
+    public function write($sessionId, $data): bool
+    {
+        $payload = $this->getDefaultPayload($data);
+        $created = false;
+
+        if (! $this->exists) {
+            $this->read($sessionId);
+        }
+
+        if ($this->exists) {
+            $this->performUpdate($sessionId, $payload);
+        } else {
+            $this->performInsert($sessionId, $payload);
+            $created = true;
+        }
+
+        event(
+            'eloquent.' . ($created ? 'created' : 'updated') . ': ' . Session::class,
+            Session::find($sessionId)
+        );
+
+        return $this->exists = true;
+    }
+
+    /**
      * Get a fresh query builder instance for the table.
      *
      * @return \Illuminate\Database\Eloquent\Builder
